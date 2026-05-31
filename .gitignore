@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+functions/node_modules/
+web/node_modules/
+
+# Environment variables (NEVER commitear)
+.env
+functions/.env
+web/.env
+
+# Build output
+web/build/
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# System
+.DS_Store
+*.log

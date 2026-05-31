@@ -1,0 +1,28 @@
+{
+  "name": "calendarbot-functions",
+  "version": "1.0.0",
+  "description": "Cloud Functions for CalendarBot - Telegram bot with Gemini AI and Google Calendar",
+  "main": "src/index.js",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "deploy": "gcloud functions deploy calendarbot --gen2 --runtime=nodejs20 --region=us-central1 --source=. --entry-point=calendarbot --trigger-http --allow-unauthenticated --project=proyecto-laboratorio-467421",
+    "deploy:env": "gcloud functions deploy calendarbot --gen2 --runtime=nodejs20 --region=us-central1 --source=. --entry-point=calendarbot --trigger-http --allow-unauthenticated --project=proyecto-laboratorio-467421 --set-env-vars=\"$(grep -v '^#' .env | grep -v '^$' | tr '\\n' ',')\"",
+    "logs": "gcloud functions logs read calendarbot --gen2 --region=us-central1 --project=proyecto-laboratorio-467421 --limit=50"
+  },
+  "dependencies": {
+    "@google-cloud/datastore": "^9.0.0",
+    "@google/generative-ai": "^0.15.0",
+    "dayjs": "^1.11.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.19.0",
+    "googleapis": "^140.0.0",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
