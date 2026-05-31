@@ -11,7 +11,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "deploy": "gcloud run deploy calendarbot-web --source=. --platform=managed --region=us-central1 --allow-unauthenticated --project=proyecto-laboratorio-467421",
+    "logs": "gcloud run services logs read calendarbot-web --region=us-central1 --project=proyecto-laboratorio-467421 --limit=50"
   },
   "browserslist": {
     "production": [">0.2%", "not dead", "not op_mini all"],
