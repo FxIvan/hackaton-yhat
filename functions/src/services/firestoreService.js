@@ -16,9 +16,13 @@ function toPlain(entity) {
 // ── Users ──────────────────────────────────────────────────────────────────
 
 async function getUser(telegramId) {
+  try{
   const key = datastore.key([USERS_KIND, String(telegramId)]);
   const [entity] = await datastore.get(key);
   return toPlain(entity);
+  } catch (error){
+    console.error('getUser: ', error)
+  }
 }
 
 async function saveUser(telegramId, data) {

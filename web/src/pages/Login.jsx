@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Login.module.css';
 
 export default function Login() {
@@ -40,6 +41,11 @@ export default function Login() {
         <p className={styles.privacy}>
           Solo accedemos a tu calendario. No compartimos tu información.
         </p>
+        <div className={styles.legalLinks}>
+          <Link to="/privacy">Política de privacidad</Link>
+          <span className={styles.separator}>·</span>
+          <Link to="/terms">Condiciones del servicio</Link>
+        </div>
       </div>
     </div>
   );

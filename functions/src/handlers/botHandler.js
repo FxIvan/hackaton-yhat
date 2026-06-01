@@ -10,9 +10,6 @@ const MAIN_MENU_BUTTONS = [
 ];
 
 async function telegramWebhook(req, res) {
-  // Acknowledge Telegram immediately to avoid retries
-  res.sendStatus(200);
-
   try {
     const update = req.body;
 
@@ -23,59 +20,78 @@ async function telegramWebhook(req, res) {
     }
   } catch (err) {
     console.error('Error in telegramWebhook:', err);
+  } finally {
+    res.sendStatus(200);
   }
 }
 
 async function handleMessage(message) {
-  const telegramId = String(message.from.id);
-  const text = message.text || '';
-  const chatId = message.chat.id;
+  try {
+    const telegramId = String(message.from.id);
+    const text = message.text || '';
+    const chatId = message.chat.id;
 
-  if (text === '/start') {
-    await handleStart(chatId, telegramId);
-    return;
+    if (text === '/start') {
+      await handleStart(chatId, telegramId);
+      return;
+    }
+
+    if (text === '/menu') {
+      await sendMainMenu(chatId);
+      return;
+    }
+
+    if (text === '/help') {
+      await sendMessage(chatId, helpText());
+      return;
+    }
+
+    const user = await getUser(telegramId);
+    if (!user) {
+      await sendMessage(
+        chatId,
+        '❌ Primero necesitás conectar tu Google Calendar.\nUsá /start para comenzar.'
+      );
+      return;
+    }
+
+    // Natural language request — pass to event handler
+    await handleEventRequest(chatId, telegramId, text, null);
+  } catch (error) {
+    console.log("telegramWebhook | handleMessage:", error)
   }
-
-  if (text === '/menu') {
-    await sendMainMenu(chatId);
-    return;
-  }
-
-  if (text === '/help') {
-    await sendMessage(chatId, helpText());
-    return;
-  }
-
-  const user = await getUser(telegramId);
-  if (!user) {
-    await sendMessage(
-      chatId,
-      '❌ Primero necesitás conectar tu Google Calendar.\nUsá /start para comenzar.'
-    );
-    return;
-  }
-
-  // Natural language request — pass to event handler
-  await handleEventRequest(chatId, telegramId, text, null);
 }
 
 async function handleStart(chatId, telegramId) {
-  const user = await getUser(telegramId);
+  try {
+    const user = await getUser(telegramId);
 
-  if (user) {
-    await sendMessage(
+    if (user) {
+      await sendMessage(
+        chatId,
+        `👋 ¡Hola de nuevo, ${user.displayName}!\nTu Google Calendar ya está conectado.`
+      );
+      await sendMainMenu(chatId);
+      return;
+    }
+
+    const authUrl = `${process.env.BASE_URL}/auth/start?telegramId=${telegramId}`;
+    console.log("🚀 ~ handleStart ~ authUrl:", authUrl)
+
+    await sendMessageWithButtons(
       chatId,
-      `👋 ¡Hola de nuevo, ${user.displayName}!\nTu Google Calendar ya está conectado.`
-    );
-    await sendMainMenu(chatId);
-    return;
+      '👋 ¡Bienvenido a CalendarBot!\n\nPara comenzar, conectá tu Google Calendar:',
+      [
+        [
+          {
+            text: '🔗 Conectar Google Calendar',
+            url: authUrl
+          }
+        ],
+      ]);
+  } catch (error) {
+    console.error('handleStart | Error:', error)
   }
-
-  const authUrl = `${process.env.BASE_URL}/auth/start?telegramId=${telegramId}`;
-
-  await sendMessageWithButtons(chatId, '👋 ¡Bienvenido a CalendarBot!\n\nPara comenzar, conectá tu Google Calendar:', [
-    [{ text: '🔗 Conectar Google Calendar', url: authUrl }],
-  ]);
 }
 
 async function handleCallbackQuery(callbackQuery) {

@@ -396,3 +396,34 @@ Tu tarea:
 ## 📄 Licencia
 
 MIT — Proyecto interno de desarrollo.
+
+
+---------------
+
+https://calendarbot-51469636905.us-central1.run.app/auth/start?telegramId=1419249584
+
+
+localhost:8080/auth/start?telegramId=1419249584
+
+
+
+
+
+http://localhost:3000/?telegramId=1419249584
+
+
+
+gcloud projects add-iam-policy-binding proyecto-laboratorio-467421 \
+  --member="serviceAccount:51469636905-compute@developer.gserviceaccount.com" \
+  --role="roles/datastore.user"
+
+
+
+curl "https://api.telegram.org/bot8731453894:AAG58Iq3ydISU-ZYeqAWmRrvofj723ovNJE/setWebhook?url=https://calendarbot-51469636905.us-central1.run.app/telegramWebhook"
+
+
+Verificar:
+curl "https://api.telegram.org/bot8731453894:AAG58Iq3ydISU-ZYeqAWmRrvofj723ovNJE/getWebhookInfo"
+
+
+curl "https://api.telegram.org/bot8731453894:AAG58Iq3ydISU-ZYeqAWmRrvofj723ovNJE/setWebhook?url=https://api.argendabot.com/telegramWebhook"
